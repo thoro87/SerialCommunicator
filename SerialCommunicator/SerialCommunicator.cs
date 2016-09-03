@@ -8,22 +8,24 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SerialCommunicator {
-	public class SerialCommunicator {
 
-		public enum SerialMessage {
-			Command1 = 1,
-			Command2 = 2,
-			Result1 = 8,
-			Result2 = 9
-		}
+	public enum SerialMessage {
+		Command1 = 1,
+		Command2 = 2,
+		Result1 = 8,
+		Result2 = 9
+	}
+
+	public static class SerialCommunicator {
+
+		private static SerialPort serialPort;
+		private static Control control;
+		private static ReadMessageCallback readMessageCallback;
+		private static bool initialized;
 
 		public delegate void ReadMessageCallback(SerialMessage msg);
 
-		private SerialPort serialPort;
-		private Control control;
-		private ReadMessageCallback readMessageCallback;
-
-		public SerialCommunicator(Control ctrl, ReadMessageCallback callback) {
+		public static void Initialize(Control ctrl, ReadMessageCallback callback) {
 			serialPort = new SerialPort() {
 				PortName = "COM5",
 				BaudRate = 9600,
@@ -35,17 +37,17 @@ namespace SerialCommunicator {
 			readMessageCallback = callback;
 		}
 
-		public void Connect() {
+		public static void Connect() {
 			serialPort.Open();
 			Console.WriteLine("Serial connected.");
 		}
 
-		public void Disconnect() {
+		public static void Disconnect() {
 			serialPort.Close();
 			Console.WriteLine("Serial disconnected.");
 		}
 
-		public void SendMessage(SerialMessage msg) {
+		public static void SendMessage(SerialMessage msg) {
 			if (serialPort.IsOpen) {
 				Console.WriteLine(String.Format("SendMessage: {0}", msg));
 				serialPort.WriteLine(((int)msg).ToString());
@@ -54,7 +56,7 @@ namespace SerialCommunicator {
 			}
 		}
 
-		private void ReadMessageHandler(object sender, SerialDataReceivedEventArgs e) {
+		private static void ReadMessageHandler(object sender, SerialDataReceivedEventArgs e) {
 			try {
 				SerialMessage msg = (SerialMessage)(Int32.Parse(serialPort.ReadLine()));
 				Console.WriteLine(String.Format("ReadMessage: {0}", msg));
