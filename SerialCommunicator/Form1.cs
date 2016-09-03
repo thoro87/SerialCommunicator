@@ -16,7 +16,7 @@ namespace SerialCommunicator {
 		public Form1() {
 			InitializeComponent();
 
-			serialCommunicator = new SerialCommunicator(this);
+			serialCommunicator = new SerialCommunicator(this, ReceiveMessage);
 			serialCommunicator.Connect();
 		}
 
