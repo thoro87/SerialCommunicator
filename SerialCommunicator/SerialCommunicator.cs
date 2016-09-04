@@ -15,22 +15,26 @@ namespace SerialCommunicator {
 
 		private static SerialPort serialPort;
 		private static Control control;
-		private static ReadMessageCallback readMessageCallback;
+		private static ReceiveMessageCallback readMessageCallback;
 
-		public delegate void ReadMessageCallback(SerialMessage msg);
+		public delegate void ReceiveMessageCallback(SerialMessage msg);
 
 		#region public methods
-		public static bool Connect(Control ctrl, ReadMessageCallback callback, string portName) {
+		public static bool Connect(Control ctrl, ReceiveMessageCallback callback, string portName) {
 			if (serialPort == null) {
 				Initialize(ctrl, callback, portName);
+			} else if (serialPort.IsOpen) {
+				ConsoleOutput("Already connected.");
+			} else {
+				serialPort.PortName = portName;
 			}
 
 			try {
 				serialPort.Open();
-				ConsoleOutput("Connected.");
+				ConsoleOutput(String.Format("Connected to port {0}", portName));
 				return true;
 			} catch {
-				ConsoleOutput("Unable to connect.");
+				ConsoleOutput(String.Format("Unable to connect to port {0}", portName));
 				return false;
 			}
 		}
@@ -53,12 +57,16 @@ namespace SerialCommunicator {
 		#endregion
 
 		#region private methods
-		private static void Initialize(Control ctrl, ReadMessageCallback callback, string portName) {
+		private static void Initialize(Control ctrl, ReceiveMessageCallback callback, string portName) {
+			Initialize(ctrl, callback, portName, 9600, 2000, 500);
+		}
+
+		private static void Initialize(Control ctrl, ReceiveMessageCallback callback, string portName, int baudRate, int readTimeout, int writeTimeout) {
 			serialPort = new SerialPort() {
 				PortName = portName,
-				BaudRate = 9600,
-				ReadTimeout = 2000,
-				WriteTimeout = 500
+				BaudRate = baudRate,
+				ReadTimeout = readTimeout,
+				WriteTimeout = writeTimeout
 			};
 			serialPort.DataReceived += new SerialDataReceivedEventHandler(ReceiveMessageHandler);
 			control = ctrl;

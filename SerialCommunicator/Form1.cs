@@ -12,6 +12,8 @@ using System.Windows.Forms;
 namespace SerialCommunicator {
 	public partial class Form1 : Form {
 
+		private bool connected;
+
 		public Form1() {
 			InitializeComponent();
 
@@ -20,11 +22,20 @@ namespace SerialCommunicator {
 				portComboBox.Items.Add(portName);
 			}
 			portComboBox.SelectedIndex = portComboBox.Items.Count - 1;
+
+			UpdateGui();
 		}
 
 		public void ReceiveMessage(SerialMessage msg) {
 			Console.WriteLine(String.Format("Form received Message: {0}", msg.ToString()));
-			label1.Text = msg.ToString();
+			textBox.AppendText("<<< " + msg.ToString() + "\n");
+		}
+
+		private void UpdateGui() {
+			buttonConnect.Text = connected ? "Disconnect" : "Connect";
+			portComboBox.Enabled = !connected;
+			buttonSendCommand1.Enabled = connected;
+			buttonSendCommand2.Enabled = connected;
 		}
 
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
@@ -33,16 +44,24 @@ namespace SerialCommunicator {
 
 
 		#region buttons
-		private void button1_Click(object sender, EventArgs e) {
+		private void buttonSendCommand1_Click(object sender, EventArgs e) {
+			textBox.AppendText(">>> " + SerialMessage.Command1 + "\n");
 			SerialCommunicator.SendMessage(SerialMessage.Command1);
 		}
 
-		private void button2_Click(object sender, EventArgs e) {
+		private void buttonSendCommand2_Click(object sender, EventArgs e) {
+			textBox.AppendText(">>> " + SerialMessage.Command2 + "\n");
 			SerialCommunicator.SendMessage(SerialMessage.Command2);
 		}
 
-		private void button4_Click(object sender, EventArgs e) {
-			SerialCommunicator.Connect(this, ReceiveMessage, (string)portComboBox.SelectedItem);
+		private void buttonConnect_Click(object sender, EventArgs e) {
+			if (connected) {
+				SerialCommunicator.Disconnect();
+				connected = false;
+			} else {
+				connected = SerialCommunicator.Connect(this, ReceiveMessage, (string)portComboBox.SelectedItem);
+			}
+			UpdateGui();
 		}
 		#endregion
 	}
