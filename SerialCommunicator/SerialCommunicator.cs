@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SerialCommunicator {
@@ -32,39 +27,58 @@ namespace SerialCommunicator {
 				ReadTimeout = 2000,
 				WriteTimeout = 500
 			};
-			serialPort.DataReceived += new SerialDataReceivedEventHandler(ReadMessageHandler);
+			serialPort.DataReceived += new SerialDataReceivedEventHandler(ReceiveMessageHandler);
 			control = ctrl;
 			readMessageCallback = callback;
+			initialized = true;
+			ConsoleOutput("Initialized.");
 		}
 
+		#region public methods
 		public static void Connect() {
+			Assert(initialized, "SerialCommunicator has not been initialized yet.");
 			serialPort.Open();
-			Console.WriteLine("Serial connected.");
+			ConsoleOutput("Connected.");
 		}
 
 		public static void Disconnect() {
+			Assert(initialized, "SerialCommunicator has not been initialized yet.");
 			serialPort.Close();
-			Console.WriteLine("Serial disconnected.");
+			ConsoleOutput("Disconnected.");
 		}
 
 		public static void SendMessage(SerialMessage msg) {
+			Assert(initialized, "SerialCommunicator has not been initialized yet.");
 			if (serialPort.IsOpen) {
-				Console.WriteLine(String.Format("SendMessage: {0}", msg));
+				ConsoleOutput(String.Format("Sending Message: {0}", msg));
 				serialPort.WriteLine(((int)msg).ToString());
 			} else {
 				Console.WriteLine("Can not send message, because SerialPort is closed.");
 			}
 		}
+		#endregion
 
-		private static void ReadMessageHandler(object sender, SerialDataReceivedEventArgs e) {
+		#region private methods
+		private static void ReceiveMessageHandler(object sender, SerialDataReceivedEventArgs e) {
 			try {
 				SerialMessage msg = (SerialMessage)(Int32.Parse(serialPort.ReadLine()));
-				Console.WriteLine(String.Format("ReadMessage: {0}", msg));
+				ConsoleOutput(String.Format("Reading Message: {0}", msg));
 				control.Invoke(readMessageCallback, msg);	
 			} catch (Exception) {
-				Console.WriteLine("Error reading message.");
+				ConsoleOutput("Error reading message.");
 			}
 		}
+
+		private static void Assert(bool statement, string message) {
+			if (!statement) {
+				throw new Exception(message);
+			}
+		}
+
+		private static void ConsoleOutput(string message) {
+			Console.WriteLine(String.Format("SerialCommunicator: {0}", message));
+		}
+		#endregion
 
 	}
 }
