@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,8 +15,11 @@ namespace SerialCommunicator {
 		public Form1() {
 			InitializeComponent();
 
-			SerialCommunicator.Initialize(this, ReceiveMessage);
-			SerialCommunicator.Connect();
+			portComboBox.Items.Clear();
+			foreach (string portName in SerialPort.GetPortNames()) {
+				portComboBox.Items.Add(portName);
+			}
+			portComboBox.SelectedIndex = portComboBox.Items.Count - 1;
 		}
 
 		public void ReceiveMessage(SerialMessage msg) {
@@ -27,6 +31,8 @@ namespace SerialCommunicator {
 			SerialCommunicator.Disconnect();
 		}
 
+
+		#region buttons
 		private void button1_Click(object sender, EventArgs e) {
 			SerialCommunicator.SendMessage(SerialMessage.Command1);
 		}
@@ -34,5 +40,10 @@ namespace SerialCommunicator {
 		private void button2_Click(object sender, EventArgs e) {
 			SerialCommunicator.SendMessage(SerialMessage.Command2);
 		}
+
+		private void button4_Click(object sender, EventArgs e) {
+			SerialCommunicator.Connect(this, ReceiveMessage, (string)portComboBox.SelectedItem);
+		}
+		#endregion
 	}
 }

@@ -16,13 +16,46 @@ namespace SerialCommunicator {
 		private static SerialPort serialPort;
 		private static Control control;
 		private static ReadMessageCallback readMessageCallback;
-		private static bool initialized;
 
 		public delegate void ReadMessageCallback(SerialMessage msg);
 
-		public static void Initialize(Control ctrl, ReadMessageCallback callback) {
+		#region public methods
+		public static bool Connect(Control ctrl, ReadMessageCallback callback, string portName) {
+			if (serialPort == null) {
+				Initialize(ctrl, callback, portName);
+			}
+
+			try {
+				serialPort.Open();
+				ConsoleOutput("Connected.");
+				return true;
+			} catch {
+				ConsoleOutput("Unable to connect.");
+				return false;
+			}
+		}
+
+		public static void Disconnect() {
+			if (serialPort != null && serialPort.IsOpen) {
+				serialPort.Close();
+				ConsoleOutput("Disconnected.");
+			}
+		}
+
+		public static void SendMessage(SerialMessage msg) {
+			if (serialPort != null && serialPort.IsOpen) {
+				ConsoleOutput(String.Format("Sending Message: {0}", msg));
+				serialPort.WriteLine(((int)msg).ToString());
+			} else {
+				ConsoleOutput("Can not send message. Not connected to SerialPort.");
+			}
+		}
+		#endregion
+
+		#region private methods
+		private static void Initialize(Control ctrl, ReadMessageCallback callback, string portName) {
 			serialPort = new SerialPort() {
-				PortName = "COM5",
+				PortName = portName,
 				BaudRate = 9600,
 				ReadTimeout = 2000,
 				WriteTimeout = 500
@@ -30,35 +63,9 @@ namespace SerialCommunicator {
 			serialPort.DataReceived += new SerialDataReceivedEventHandler(ReceiveMessageHandler);
 			control = ctrl;
 			readMessageCallback = callback;
-			initialized = true;
 			ConsoleOutput("Initialized.");
 		}
 
-		#region public methods
-		public static void Connect() {
-			Assert(initialized, "SerialCommunicator has not been initialized yet.");
-			serialPort.Open();
-			ConsoleOutput("Connected.");
-		}
-
-		public static void Disconnect() {
-			Assert(initialized, "SerialCommunicator has not been initialized yet.");
-			serialPort.Close();
-			ConsoleOutput("Disconnected.");
-		}
-
-		public static void SendMessage(SerialMessage msg) {
-			Assert(initialized, "SerialCommunicator has not been initialized yet.");
-			if (serialPort.IsOpen) {
-				ConsoleOutput(String.Format("Sending Message: {0}", msg));
-				serialPort.WriteLine(((int)msg).ToString());
-			} else {
-				Console.WriteLine("Can not send message, because SerialPort is closed.");
-			}
-		}
-		#endregion
-
-		#region private methods
 		private static void ReceiveMessageHandler(object sender, SerialDataReceivedEventArgs e) {
 			try {
 				SerialMessage msg = (SerialMessage)(Int32.Parse(serialPort.ReadLine()));
@@ -66,12 +73,6 @@ namespace SerialCommunicator {
 				control.Invoke(readMessageCallback, msg);	
 			} catch (Exception) {
 				ConsoleOutput("Error reading message.");
-			}
-		}
-
-		private static void Assert(bool statement, string message) {
-			if (!statement) {
-				throw new Exception(message);
 			}
 		}
 
