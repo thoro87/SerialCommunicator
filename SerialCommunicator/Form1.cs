@@ -26,9 +26,9 @@ namespace SerialCommunicator {
 			UpdateGui();
 		}
 
-		public void ReceiveMessage(SerialMessage msg) {
-			Console.WriteLine(String.Format("Form received Message: {0}", msg.ToString()));
-			textBox.AppendText("<<< " + msg.ToString() + "\n");
+		public void ReceiveMessage(string msg) {
+			Console.WriteLine(String.Format("Form received Message: {0}", msg));
+			textBox.AppendText("<<< " + msg + "\n");
 		}
 
 		private void UpdateGui() {
@@ -45,13 +45,15 @@ namespace SerialCommunicator {
 
 		#region buttons
 		private void buttonSendCommand1_Click(object sender, EventArgs e) {
-			textBox.AppendText(">>> " + SerialMessage.Command1 + "\n");
-			SerialCommunicator.SendMessage(SerialMessage.Command1);
+			string cmd = "command1";
+			textBox.AppendText(">>> " + cmd + "\n");
+			SerialCommunicator.SendMessage(cmd);
 		}
 
 		private void buttonSendCommand2_Click(object sender, EventArgs e) {
-			textBox.AppendText(">>> " + SerialMessage.Command2 + "\n");
-			SerialCommunicator.SendMessage(SerialMessage.Command2);
+			string cmd = "command2";
+			textBox.AppendText(">>> " + cmd + "\n");
+			SerialCommunicator.SendMessage(cmd);
 		}
 
 		private void buttonConnect_Click(object sender, EventArgs e) {

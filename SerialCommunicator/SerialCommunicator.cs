@@ -4,25 +4,23 @@ using System.Windows.Forms;
 
 namespace SerialCommunicator {
 
-	public enum SerialMessage {
-		Command1 = 1,
-		Command2 = 2,
-		Result1 = 8,
-		Result2 = 9
-	}
-
 	public static class SerialCommunicator {
 
 		private static SerialPort serialPort;
 		private static Control control;
 		private static ReceiveMessageCallback readMessageCallback;
+		private static char endOfMessageChar = ';';
 
-		public delegate void ReceiveMessageCallback(SerialMessage msg);
+		public delegate void ReceiveMessageCallback(string msg);
 
 		#region public methods
 		public static bool Connect(Control ctrl, ReceiveMessageCallback callback, string portName) {
+			return Connect(ctrl, callback, portName, 9600, 2000, 500);
+		}
+
+		public static bool Connect(Control ctrl, ReceiveMessageCallback callback, string portName, int baudRate, int readTimeout, int writeTimeout) {
 			if (serialPort == null) {
-				Initialize(ctrl, callback, portName);
+				Initialize(ctrl, callback, portName, baudRate, readTimeout, writeTimeout);
 			} else if (serialPort.IsOpen) {
 				ConsoleOutput("Already connected.");
 			} else {
@@ -46,21 +44,21 @@ namespace SerialCommunicator {
 			}
 		}
 
-		public static void SendMessage(SerialMessage msg) {
+		public static void SendMessage(string msg) {
 			if (serialPort != null && serialPort.IsOpen) {
 				ConsoleOutput(String.Format("Sending Message: {0}", msg));
-				serialPort.WriteLine(((int)msg).ToString());
+				serialPort.Write(msg + endOfMessageChar);
 			} else {
 				ConsoleOutput("Can not send message. Not connected to SerialPort.");
 			}
 		}
+
+		public static void SetEndOfMessageCharactr(char newChar) {
+			endOfMessageChar = newChar;
+		}
 		#endregion
 
 		#region private methods
-		private static void Initialize(Control ctrl, ReceiveMessageCallback callback, string portName) {
-			Initialize(ctrl, callback, portName, 9600, 2000, 500);
-		}
-
 		private static void Initialize(Control ctrl, ReceiveMessageCallback callback, string portName, int baudRate, int readTimeout, int writeTimeout) {
 			serialPort = new SerialPort() {
 				PortName = portName,
@@ -75,13 +73,9 @@ namespace SerialCommunicator {
 		}
 
 		private static void ReceiveMessageHandler(object sender, SerialDataReceivedEventArgs e) {
-			try {
-				SerialMessage msg = (SerialMessage)(Int32.Parse(serialPort.ReadLine()));
-				ConsoleOutput(String.Format("Reading Message: {0}", msg));
-				control.Invoke(readMessageCallback, msg);	
-			} catch (Exception) {
-				ConsoleOutput("Error reading message.");
-			}
+			string msg = serialPort.ReadLine();
+			ConsoleOutput(String.Format("Reading Message: {0}", msg));
+			control.Invoke(readMessageCallback, msg);	
 		}
 
 		private static void ConsoleOutput(string message) {
