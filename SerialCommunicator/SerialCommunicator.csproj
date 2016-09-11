@@ -47,10 +47,10 @@
   <ItemGroup>
     <Content Include="bin\Debug\SerialCommunicator.dll" />
     <Content Include="bin\Debug\SerialCommunicator.pdb" />
+    <Content Include="bin\Release\SerialCommunicator.dll" />
+    <Content Include="bin\Release\SerialCommunicator.pdb" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="bin\Release\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

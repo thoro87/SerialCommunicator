@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 		private static SerialPort serialPort;
 		private static Control control;
-		private static ReceiveMessageCallback readMessageCallback;
+		private static ReceiveMessageCallback receiveMessageCallback;
 
 		public delegate void ReceiveMessageCallback(string msg);
 
@@ -61,14 +61,14 @@ using System.Windows.Forms;
 			};
 			serialPort.DataReceived += new SerialDataReceivedEventHandler(ReceiveMessageHandler);
 			control = ctrl;
-			readMessageCallback = callback;
+			receiveMessageCallback = callback;
 			ConsoleOutput("Initialized.");
 		}
 
 		private static void ReceiveMessageHandler(object sender, SerialDataReceivedEventArgs e) {
 			string msg = serialPort.ReadLine();
 			ConsoleOutput(String.Format("Reading Message: {0}", msg));
-			control.Invoke(readMessageCallback, msg);	
+			control.Invoke(receiveMessageCallback, msg);	
 		}
 
 		private static void ConsoleOutput(string message) {
