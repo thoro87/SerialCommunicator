@@ -49,5 +49,8 @@ Temporary Items
 # Custom
 /.vs/*
 /SerialCommunicator/obj/*
-/SerialCommunicator/obj/Debug/*
+/SerialCommunicator/Properties/*
+/WinFormsExample/obj/*
+/WinFormsExample/bin/*
+/WinFormsExample/Properties/*
 

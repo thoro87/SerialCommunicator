@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SerialCommunicator {
+namespace WinFormsExample {
 	public partial class Form1 : Form {
 
 		private bool connected;

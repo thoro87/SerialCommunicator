@@ -2,8 +2,6 @@
 using System.IO.Ports;
 using System.Windows.Forms;
 
-namespace SerialCommunicator {
-
 	public static class SerialCommunicator {
 
 		private static SerialPort serialPort;
@@ -77,6 +75,4 @@ namespace SerialCommunicator {
 			Console.WriteLine(String.Format("SerialCommunicator: {0}", message));
 		}
 		#endregion
-
-	}
 }
