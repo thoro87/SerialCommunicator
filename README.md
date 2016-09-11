@@ -1,4 +1,4 @@
-# SerialCommunicator - easy serial communication with C#
+#Serial communication with C-Sharp
 
 I did some projects in the past where I needed to communicate bewteen C# and my Arduino (e. g. from WinForms Application).
 Now I finally decided to create a dedicated class for this communication.
