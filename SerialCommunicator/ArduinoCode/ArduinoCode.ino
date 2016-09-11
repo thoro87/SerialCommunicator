@@ -8,7 +8,7 @@ void loop() {
   while(Serial.available()) {
     if (Serial.available() > 0) {
       char c = Serial.read();
-      if (c == ';') {
+      if (c == '\n') {
         readMessage();
       } else {
         msg += c;    

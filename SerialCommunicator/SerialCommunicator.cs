@@ -9,7 +9,6 @@ namespace SerialCommunicator {
 		private static SerialPort serialPort;
 		private static Control control;
 		private static ReceiveMessageCallback readMessageCallback;
-		private static char endOfMessageChar = ';';
 
 		public delegate void ReceiveMessageCallback(string msg);
 
@@ -47,14 +46,10 @@ namespace SerialCommunicator {
 		public static void SendMessage(string msg) {
 			if (serialPort != null && serialPort.IsOpen) {
 				ConsoleOutput(String.Format("Sending Message: {0}", msg));
-				serialPort.Write(msg + endOfMessageChar);
+				serialPort.WriteLine(msg);
 			} else {
 				ConsoleOutput("Can not send message. Not connected to SerialPort.");
 			}
-		}
-
-		public static void SetEndOfMessageCharactr(char newChar) {
-			endOfMessageChar = newChar;
 		}
 		#endregion
 
