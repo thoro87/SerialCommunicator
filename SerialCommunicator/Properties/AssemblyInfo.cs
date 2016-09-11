@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SerialCommunicator")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Class library for easy and robust serial communication")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Janis Langer")]
 [assembly: AssemblyProduct("SerialCommunicator")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
