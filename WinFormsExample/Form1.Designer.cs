@@ -34,7 +34,7 @@
 			// 
 			// buttonSendCommand1
 			// 
-			this.buttonSendCommand1.Location = new System.Drawing.Point(144, 53);
+			this.buttonSendCommand1.Location = new System.Drawing.Point(13, 53);
 			this.buttonSendCommand1.Name = "buttonSendCommand1";
 			this.buttonSendCommand1.Size = new System.Drawing.Size(123, 23);
 			this.buttonSendCommand1.TabIndex = 0;
@@ -44,7 +44,7 @@
 			// 
 			// buttonSendCommand2
 			// 
-			this.buttonSendCommand2.Location = new System.Drawing.Point(13, 53);
+			this.buttonSendCommand2.Location = new System.Drawing.Point(142, 53);
 			this.buttonSendCommand2.Name = "buttonSendCommand2";
 			this.buttonSendCommand2.Size = new System.Drawing.Size(125, 23);
 			this.buttonSendCommand2.TabIndex = 1;
