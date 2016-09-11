@@ -22,40 +22,30 @@ namespace WinFormsExample {
 				portComboBox.Items.Add(portName);
 			}
 			portComboBox.SelectedIndex = portComboBox.Items.Count - 1;
-
 			UpdateGui();
 		}
 
-		public void ReceiveMessage(string msg) {
-			Console.WriteLine(String.Format("Form received Message: {0}", msg));
-			textBox.AppendText("<<< " + msg + "\n");
-		}
-
+		#region private methods
 		private void UpdateGui() {
 			buttonConnect.Text = connected ? "Disconnect" : "Connect";
 			portComboBox.Enabled = !connected;
 			buttonSendCommand1.Enabled = connected;
 			buttonSendCommand2.Enabled = connected;
+			buttonSendText.Enabled = connected;
 		}
 
-		private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
-			SerialCommunicator.Disconnect();
+		private void ReceiveMessage(string msg) {
+			Console.WriteLine(String.Format("Form received Message: {0}", msg));
+			textBox.AppendText("<<< " + msg + "\n");
 		}
 
+		private void SendMessage(String msg) {
+			textBox.AppendText(">>> " + msg + "\n");
+			SerialCommunicator.SendMessage(msg);
+		}
+		#endregion
 
 		#region buttons
-		private void buttonSendCommand1_Click(object sender, EventArgs e) {
-			string cmd = "command1";
-			textBox.AppendText(">>> " + cmd + "\n");
-			SerialCommunicator.SendMessage(cmd);
-		}
-
-		private void buttonSendCommand2_Click(object sender, EventArgs e) {
-			string cmd = "command2";
-			textBox.AppendText(">>> " + cmd + "\n");
-			SerialCommunicator.SendMessage(cmd);
-		}
-
 		private void buttonConnect_Click(object sender, EventArgs e) {
 			if (connected) {
 				SerialCommunicator.Disconnect();
@@ -64,6 +54,27 @@ namespace WinFormsExample {
 				connected = SerialCommunicator.Connect(this, ReceiveMessage, (string)portComboBox.SelectedItem);
 			}
 			UpdateGui();
+		}
+
+		private void buttonSendCommand1_Click(object sender, EventArgs e) {
+			SendMessage("command1");
+		}
+
+		private void buttonSendCommand2_Click(object sender, EventArgs e) {
+			SendMessage("command2");
+        }
+
+		private void buttonSendText_Click(object sender, EventArgs e) {
+			if (!String.IsNullOrEmpty(textBoxFree.Text)) {
+				SendMessage(textBoxFree.Text);
+				textBoxFree.Text = String.Empty;
+			}
+		}
+		#endregion
+
+		#region events
+		private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
+			SerialCommunicator.Disconnect();
 		}
 		#endregion
 	}
