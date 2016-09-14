@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.IO.Ports;
+using System.Management;
 using System.Windows.Forms;
 
 // <copyright file="Program.cs" company="">
@@ -22,17 +25,43 @@ using System.Windows.Forms;
 //	You should have received a copy of the GNU General Public License
 //	along with SerialCommunicator. If not, see<http://www.gnu.org/licenses/>.
 
+public class SerialPortInfo {
+	public string DeviceID { get; set; }
+	public string Name { get; set; }
+
+	public override string ToString() {
+		return Name;
+	}
+}
+
 /// <summary>
 /// Small class library for easy and robust serial communication
 /// </summary>
-public static class SerialCommunicator {
-	private static SerialPort serialPort;
-	private static Control control;
-	private static ReceiveMessageCallback receiveMessageCallback;
+public class SerialCommunicator {
+	private SerialPort serialPort;
+	private Control control;
+	private ReceiveMessageCallback receiveMessageCallback;
 
 	public delegate void ReceiveMessageCallback(string msg);
 
+
 	#region public methods
+	public SerialPortInfo[] GetPortNames() {
+		List<SerialPortInfo> portNames = new List<SerialPortInfo>();
+		try {
+			ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_SerialPort");
+			foreach (ManagementObject queryObj in searcher.Get()) {
+				portNames.Add(new SerialPortInfo() {
+					DeviceID = (string)queryObj["DeviceID"],
+					Name = (string)queryObj["Name"]
+				});
+			}
+		} catch {
+			portNames = SerialPort.GetPortNames().Select(p => new SerialPortInfo() { DeviceID = p, Name = p }).ToList();
+		}
+		return portNames.ToArray();
+	}
+
 	/// <summary>
 	/// Connects to a SerialPort with the specified settings. Also initializes the class if not done already.
 	/// </summary>
@@ -40,7 +69,7 @@ public static class SerialCommunicator {
 	/// <param name="callback">Callback to invoke after receiving messages.</param>
 	/// <param name="portName">Name of COM-Port to connect to.</param>
 	/// <returns>Returns true, if connecting was successfull.</returns>
-	public static bool Connect(Control ctrl, ReceiveMessageCallback callback, string portName) {
+	public bool Connect(Control ctrl, ReceiveMessageCallback callback, string portName) {
 		return Connect(ctrl, callback, portName, 9600, 2000, 500);
 	}
 
@@ -54,7 +83,7 @@ public static class SerialCommunicator {
 	/// <param name="readTimeout">Timeout for reading messages.</param>
 	/// <param name="writeTimeout">Timeout for sending messages.</param>
 	/// <returns>Returns true, if connecting was successfull.</returns>
-	public static bool Connect(Control ctrl, ReceiveMessageCallback callback, string portName, int baudRate, int readTimeout, int writeTimeout) {
+	public bool Connect(Control ctrl, ReceiveMessageCallback callback, string portName, int baudRate, int readTimeout, int writeTimeout) {
 		if (serialPort == null) {
 			Initialize(ctrl, callback, portName, baudRate, readTimeout, writeTimeout);
 		} else if (serialPort.IsOpen) {
@@ -76,7 +105,7 @@ public static class SerialCommunicator {
 	/// <summary>
 	/// Disconnects from the current SerialPort.
 	/// </summary>
-	public static void Disconnect() {
+	public void Disconnect() {
 		if (serialPort != null && serialPort.IsOpen) {
 			serialPort.Close();
 			ConsoleOutput("Disconnected.");
@@ -87,7 +116,7 @@ public static class SerialCommunicator {
 	/// Sends a message to the SerialPort.
 	/// </summary>
 	/// <param name="msg"></param>
-	public static void SendMessage(string msg) {
+	public void SendMessage(string msg) {
 		if (serialPort != null && serialPort.IsOpen) {
 			ConsoleOutput(String.Format("Sending Message: {0}", msg));
 			serialPort.WriteLine(msg);
@@ -98,7 +127,7 @@ public static class SerialCommunicator {
 	#endregion
 
 	#region private methods
-	private static void Initialize(Control ctrl, ReceiveMessageCallback callback, string portName, int baudRate, int readTimeout, int writeTimeout) {
+	private void Initialize(Control ctrl, ReceiveMessageCallback callback, string portName, int baudRate, int readTimeout, int writeTimeout) {
 		serialPort = new SerialPort() {
 			PortName = portName,
 			BaudRate = baudRate,
@@ -111,13 +140,13 @@ public static class SerialCommunicator {
 		ConsoleOutput("Initialized.");
 	}
 
-	private static void ReceiveMessageHandler(object sender, SerialDataReceivedEventArgs e) {
+	private void ReceiveMessageHandler(object sender, SerialDataReceivedEventArgs e) {
 		string msg = serialPort.ReadLine();
 		ConsoleOutput(String.Format("Reading Message: {0}", msg));
 		control.Invoke(receiveMessageCallback, msg);
 	}
 
-	private static void ConsoleOutput(string message) {
+	private void ConsoleOutput(string message) {
 		Console.WriteLine(String.Format("SerialCommunicator: {0}", message));
 	}
 	#endregion

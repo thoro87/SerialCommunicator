@@ -33,15 +33,23 @@ namespace WinFormsExample {
 	public partial class Form1 : Form {
 
 		private bool connected;
+		private SerialCommunicator sCom1;
+		private SerialPortInfo[] portInfos;
+
 
 		public Form1() {
 			InitializeComponent();
 
+			sCom1 = new SerialCommunicator();
+			portInfos = sCom1.GetPortNames();
+
 			portComboBox.Items.Clear();
-			foreach (string portName in SerialPort.GetPortNames()) {
-				portComboBox.Items.Add(portName);
+			portComboBox.Items.AddRange(portInfos);
+			SerialPortInfo arduinoPort = portInfos.FirstOrDefault(p => p.Name.Contains("Arduino"));
+			if (arduinoPort != null) {
+				portComboBox.SelectedItem = arduinoPort;
 			}
-			portComboBox.SelectedIndex = portComboBox.Items.Count - 1;
+
 			UpdateGui();
 		}
 
@@ -61,17 +69,17 @@ namespace WinFormsExample {
 
 		private void SendMessage(String msg) {
 			textBox.AppendText(">>> " + msg + "\n");
-			SerialCommunicator.SendMessage(msg);
+			sCom1.SendMessage(msg);
 		}
 		#endregion
 
 		#region buttons
 		private void buttonConnect_Click(object sender, EventArgs e) {
 			if (connected) {
-				SerialCommunicator.Disconnect();
+				sCom1.Disconnect();
 				connected = false;
 			} else {
-				connected = SerialCommunicator.Connect(this, ReceiveMessage, (string)portComboBox.SelectedItem);
+				connected = sCom1.Connect(this, ReceiveMessage, ((SerialPortInfo)portComboBox.SelectedItem).DeviceID);
 			}
 			UpdateGui();
 		}
@@ -94,7 +102,7 @@ namespace WinFormsExample {
 
 		#region events
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
-			SerialCommunicator.Disconnect();
+			sCom1.Disconnect();
 		}
 		#endregion
 	}

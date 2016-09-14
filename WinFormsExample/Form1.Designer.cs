@@ -36,7 +36,7 @@
 			// 
 			this.buttonSendCommand1.Location = new System.Drawing.Point(13, 53);
 			this.buttonSendCommand1.Name = "buttonSendCommand1";
-			this.buttonSendCommand1.Size = new System.Drawing.Size(123, 23);
+			this.buttonSendCommand1.Size = new System.Drawing.Size(104, 23);
 			this.buttonSendCommand1.TabIndex = 0;
 			this.buttonSendCommand1.Text = "Send Command1";
 			this.buttonSendCommand1.UseVisualStyleBackColor = true;
@@ -44,9 +44,9 @@
 			// 
 			// buttonSendCommand2
 			// 
-			this.buttonSendCommand2.Location = new System.Drawing.Point(142, 53);
+			this.buttonSendCommand2.Location = new System.Drawing.Point(123, 53);
 			this.buttonSendCommand2.Name = "buttonSendCommand2";
-			this.buttonSendCommand2.Size = new System.Drawing.Size(125, 23);
+			this.buttonSendCommand2.Size = new System.Drawing.Size(99, 23);
 			this.buttonSendCommand2.TabIndex = 1;
 			this.buttonSendCommand2.Text = "Send Command2";
 			this.buttonSendCommand2.UseVisualStyleBackColor = true;
@@ -57,12 +57,12 @@
 			this.portComboBox.FormattingEnabled = true;
 			this.portComboBox.Location = new System.Drawing.Point(13, 13);
 			this.portComboBox.Name = "portComboBox";
-			this.portComboBox.Size = new System.Drawing.Size(159, 21);
+			this.portComboBox.Size = new System.Drawing.Size(254, 21);
 			this.portComboBox.TabIndex = 3;
 			// 
 			// buttonConnect
 			// 
-			this.buttonConnect.Location = new System.Drawing.Point(178, 13);
+			this.buttonConnect.Location = new System.Drawing.Point(273, 12);
 			this.buttonConnect.Name = "buttonConnect";
 			this.buttonConnect.Size = new System.Drawing.Size(89, 23);
 			this.buttonConnect.TabIndex = 5;
@@ -77,19 +77,19 @@
 			this.textBox.Name = "textBox";
 			this.textBox.ReadOnly = true;
 			this.textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.textBox.Size = new System.Drawing.Size(255, 170);
+			this.textBox.Size = new System.Drawing.Size(350, 170);
 			this.textBox.TabIndex = 6;
 			// 
 			// textBoxFree
 			// 
 			this.textBoxFree.Location = new System.Drawing.Point(13, 82);
 			this.textBoxFree.Name = "textBoxFree";
-			this.textBoxFree.Size = new System.Drawing.Size(176, 20);
+			this.textBoxFree.Size = new System.Drawing.Size(271, 20);
 			this.textBoxFree.TabIndex = 7;
 			// 
 			// buttonSendText
 			// 
-			this.buttonSendText.Location = new System.Drawing.Point(195, 82);
+			this.buttonSendText.Location = new System.Drawing.Point(290, 81);
 			this.buttonSendText.Name = "buttonSendText";
 			this.buttonSendText.Size = new System.Drawing.Size(72, 20);
 			this.buttonSendText.TabIndex = 8;
@@ -102,7 +102,7 @@
 			this.AcceptButton = this.buttonSendText;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(279, 289);
+			this.ClientSize = new System.Drawing.Size(374, 289);
 			this.Controls.Add(this.buttonSendText);
 			this.Controls.Add(this.textBoxFree);
 			this.Controls.Add(this.textBox);
