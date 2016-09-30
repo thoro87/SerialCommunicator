@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerialCommunicator.cs" />
+    <Compile Include="SerialPortInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\SerialCommunicator.dll" />

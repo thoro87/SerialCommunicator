@@ -50,6 +50,9 @@
     <Compile Include="..\SerialCommunicator\SerialCommunicator.cs">
       <Link>SerialCommunicator.cs</Link>
     </Compile>
+    <Compile Include="..\SerialCommunicator\SerialPortInfo.cs">
+      <Link>SerialPortInfo.cs</Link>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

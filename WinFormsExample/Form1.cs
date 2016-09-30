@@ -8,26 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-// <copyright file="Form1.cs" company="">
-// Copyright (c) 2016 All Right Reserved
-// </copyright>
-// <author>Janis Langer</author>
-
-//This file is part of SerialCommunicator.
-//
-//	SerialCommunicator is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//	(at your option) any later version.
-//
-//	SerialCommunicator is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//    GNU General Public License for more details.
-//
-//	You should have received a copy of the GNU General Public License
-//	along with SerialCommunicator. If not, see<http://www.gnu.org/licenses/>.
+using SerialCommunication;
 
 namespace WinFormsExample {
 	public partial class Form1 : Form {
@@ -36,20 +17,18 @@ namespace WinFormsExample {
 		private SerialCommunicator sCom1;
 		private SerialPortInfo[] portInfos;
 
-
 		public Form1() {
 			InitializeComponent();
 
 			sCom1 = new SerialCommunicator();
 			portInfos = sCom1.GetPortNames();
-
 			portComboBox.Items.Clear();
 			portComboBox.Items.AddRange(portInfos);
 			SerialPortInfo arduinoPort = portInfos.FirstOrDefault(p => p.Name.Contains("Arduino"));
 			if (arduinoPort != null) {
 				portComboBox.SelectedItem = arduinoPort;
 			}
-
+			
 			UpdateGui();
 		}
 
@@ -63,7 +42,6 @@ namespace WinFormsExample {
 		}
 
 		private void ReceiveMessage(string msg) {
-			Console.WriteLine(String.Format("Form received Message: {0}", msg));
 			textBox.AppendText("<<< " + msg + "\n");
 		}
 
