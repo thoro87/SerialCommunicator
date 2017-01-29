@@ -36,7 +36,7 @@ namespace SerialCommunication {
 		private Control control;
 		private ReceiveMessageCallback receiveMessageCallback;
 		
-		public bool Connected { get { return serialPort.IsOpen; } }
+		public bool Connected { get { return serialPort != null && serialPort.IsOpen; } }
 
 		public delegate void ReceiveMessageCallback(string msg);
 
