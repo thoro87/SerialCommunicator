@@ -160,6 +160,13 @@ namespace SerialCommunication {
 		private void ReceiveMessageHandler(object sender, SerialDataReceivedEventArgs e) {
 			string msg = serialPort.ReadLine();
 			ConsoleOutput(String.Format("Reading Message: {0}", msg));
+
+			// remove carriageReturn
+			int carriageReturn = msg.IndexOf('\r');
+			if (carriageReturn != -1) {
+				msg = msg.Remove(carriageReturn, 1);
+			}
+
 			control.Invoke(receiveMessageCallback, msg);
 		}
 
