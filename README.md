@@ -7,4 +7,4 @@ I moved everything into a small class library project.
 
 Screenshot of WinFormsExample:
 
-![Alt text](WinFormsExample/Screenshot.png?raw=true "Screenshot of WinFormsExample")
+![Alt text](WinFormsExample/Screenshot_with_LED13_control.png?raw=true "Screenshot of WinFormsExample")
