@@ -51,6 +51,9 @@
   <PropertyGroup>
     <StartupObject>WinFormsExample.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>arduino.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="SerialCommunicator">
       <HintPath>..\SerialCommunicator\bin\Debug\SerialCommunicator.dll</HintPath>
@@ -98,6 +101,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="arduino.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

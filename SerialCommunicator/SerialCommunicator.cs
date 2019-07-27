@@ -80,15 +80,14 @@ namespace SerialCommunication {
 		/// <param name="writeTimeout">Timeout for sending messages.</param>
 		/// <returns>Returns true, if connecting was successfull.</returns>
 		public bool Connect(Control ctrl, ReceiveMessageCallback callback, string portName, int baudRate, int readTimeout, int writeTimeout) {
-			if (serialPort == null) {
-				Initialize(ctrl, callback, portName, baudRate, readTimeout, writeTimeout);
-			} else if (serialPort.IsOpen) {
-				ConsoleOutput("Already connected.");
-			} else {
-				serialPort.PortName = portName;
-			}
-
 			try {
+			    if (serialPort == null) {
+				    Initialize(ctrl, callback, portName, baudRate, readTimeout, writeTimeout);
+			    } else if (serialPort.IsOpen) {
+				    ConsoleOutput("Already connected.");
+			    } else {
+				    serialPort.PortName = portName;
+			    }
 				serialPort.Open();
 				ConsoleOutput(String.Format("Connected to port {0}", portName));
 				return true;
@@ -102,10 +101,17 @@ namespace SerialCommunication {
 		/// Disconnects from the current SerialPort.
 		/// </summary>
 		public void Disconnect() {
-			if (serialPort != null && serialPort.IsOpen) {
-				serialPort.Close();
-				ConsoleOutput("Disconnected.");
-			}
+            try
+            {
+			    if (serialPort != null && serialPort.IsOpen) {
+				    serialPort.Close();
+				    ConsoleOutput("Disconnected.");
+			    }
+            }
+            catch (Exception ex)
+            {
+                ConsoleOutput(String.Format(ex + "Unable to disconnect to port {0}", serialPort.PortName));
+            }
 		}
 
 		/// <summary>
@@ -124,15 +130,26 @@ namespace SerialCommunication {
 		/// <param name="msg"></param>
 		/// <returns></returns>
 		public bool TrySendMessage(string msg) {
-			if (serialPort != null && serialPort.IsOpen) {
-				ConsoleOutput(String.Format("Sending Message: {0}", msg));
-				serialPort.WriteLine(msg);
-				return true;
-			} else {
-				ConsoleOutput("Can not send message. Not connected to SerialPort.");
-				return false;
-			}
-		}
+			try
+            {
+                if (serialPort != null && serialPort.IsOpen)
+                {
+                    ConsoleOutput(String.Format("Sending Message: {0}", msg));
+                    serialPort.WriteLine(msg);
+                    return true;
+                }
+                else
+                {
+                    ConsoleOutput("Can not send message. Not connected to SerialPort.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Es ist ein Fehler aufgetreten");
+                return false;
+            }
+        }
 
 		/// <summary>
 		/// Turn debug mode on or off. Default is off. Will print to console if on.

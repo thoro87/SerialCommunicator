@@ -36,47 +36,43 @@ namespace WinFormsExample {
 		private void UpdateGui() {
 			buttonConnect.Text = connected ? "Disconnect" : "Connect";
 			portComboBox.Enabled = !connected;
-			buttonSendCommand1.Enabled = connected;
-			buttonSendCommand2.Enabled = connected;
+			buttonSendLED13ON.Enabled = connected;
+			buttonSendLED13OFF.Enabled = connected;
 			buttonSendText.Enabled = connected;
 		}
 
 		private void ReceiveMessage(string msg) {
-            try
+            switch (msg)
             {
-                txtLEDState.Text = "LED: ";
-                switch (msg)
-                {
-                    case "L1ON":
-                        txtLEDState.Text += "ON";
-                        break;
+                case "LED13State1":
+                    txtLEDState.Text = "LED: ON";
+                    break;
 
-                    case "L1OFF":
-                        txtLEDState.Text += "OFF";
-                        break;
+                case "LED13State0":
+                    txtLEDState.Text = "LED: OFF";
+                    break;
 
-                    default:
-                        int iCnt = 0;
-                        if (int.TryParse(msg, out iCnt))
-                        {
-                            textBox.AppendText("<<< " + iCnt.ToString() + "\n");
-                        }
-                        else
-                        {
-                            textBox.AppendText("<<< " + msg + "\n");
-                        }
-                        break;
-                }
-            }
-            catch (Exception e)
-            {
+                case "LED13 switched on":
+                case "LED13 switched off":
+                    textBox.AppendText("<<< " + msg + "\n");
+                    break;
 
+                default:
+                    textBox.AppendText("<<< " + msg + "\n");
+                    break;
             }
 		}
 
 		private void SendMessage(String msg) {
-			textBox.AppendText(">>> " + msg + "\n");
-			sCom1.SendMessage(msg);
+            try
+            {
+                textBox.AppendText(">>> " + msg + "\n");
+                sCom1.TrySendMessage(msg);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Es ist ein Fehler aufgetreten");
+            }
 		}
 
         private void ChangeLEDState()
@@ -98,11 +94,11 @@ namespace WinFormsExample {
 		}
 
 		private void buttonSendCommand1_Click(object sender, EventArgs e) {
-			SendMessage("command1");
+			SendMessage("LED13ON");
 		}
 
 		private void buttonSendCommand2_Click(object sender, EventArgs e) {
-			SendMessage("command2");
+			SendMessage("LED13OFF");
         }
 
 		private void buttonSendText_Click(object sender, EventArgs e) {
