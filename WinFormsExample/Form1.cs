@@ -42,13 +42,47 @@ namespace WinFormsExample {
 		}
 
 		private void ReceiveMessage(string msg) {
-			textBox.AppendText("<<< " + msg + "\n");
+            try
+            {
+                txtLEDState.Text = "LED: ";
+                switch (msg)
+                {
+                    case "L1ON":
+                        txtLEDState.Text += "ON";
+                        break;
+
+                    case "L1OFF":
+                        txtLEDState.Text += "OFF";
+                        break;
+
+                    default:
+                        int iCnt = 0;
+                        if (int.TryParse(msg, out iCnt))
+                        {
+                            textBox.AppendText("<<< " + iCnt.ToString() + "\n");
+                        }
+                        else
+                        {
+                            textBox.AppendText("<<< " + msg + "\n");
+                        }
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
 		}
 
 		private void SendMessage(String msg) {
 			textBox.AppendText(">>> " + msg + "\n");
 			sCom1.SendMessage(msg);
 		}
+
+        private void ChangeLEDState()
+        {
+
+        }
 		#endregion
 
 		#region buttons
@@ -56,6 +90,7 @@ namespace WinFormsExample {
 			if (connected) {
 				sCom1.Disconnect();
 				connected = false;
+                textBox.Clear();
 			} else {
 				connected = sCom1.Connect(this, ReceiveMessage, ((SerialPortInfo)portComboBox.SelectedItem).DeviceID);
 			}
